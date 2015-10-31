@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "name": "no.flytit.thumbcreator",
+  "cordova_name": "ThumbCreator Plugin",
+  "description": "ThumbCreator Plugin",
+  "license": "Apache 2.0",
+  "repo": "",
+  "issue": "",
+  "keywords": [
+    "cordova",
+    "device"
+  ],
+  "platforms": [
+    "android"
+  ],
+  "engines": [],
+  "englishdoc": ""
+}
