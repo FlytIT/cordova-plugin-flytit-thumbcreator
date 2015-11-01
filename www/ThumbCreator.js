@@ -4,19 +4,21 @@ function ThumbCreator() {
  console.log("ThumbCreator.js: is created");
 }
 
-ThumbCreator.prototype.createThumb = function(path){
- console.log("path", path);
+ThumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback, errorCallback) {
+    
+    var args = [fromPath, toPath];
 
  exec(function(result){
-     /*alert("OK" + reply);*/
-    },
-    function(result){
-    /*alert("Error" + reply);*/
+         successCallback(JSON.parse(result));
+     },
+    function (result) {
+        errorCallback(result);
+        /*alert("Error" + reply);*/
     },
     "ThumbCreator"
     ,
-    path,
-    []);
+    "createThumb",
+    args);
 }
 
  var thumbCreator = new ThumbCreator();

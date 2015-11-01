@@ -1,18 +1,23 @@
 {
   "version": "0.0.1",
-  "name": "no.flytit.thumbcreator",
+  "name": "cordova-plugin-flytit-thumbcreator",
   "cordova_name": "ThumbCreator Plugin",
   "description": "ThumbCreator Plugin",
   "license": "Apache 2.0",
   "repo": "",
   "issue": "",
   "keywords": [
-    "cordova",
+   "ecosystem:cordova",
+    "cordova-android",
     "device"
   ],
   "platforms": [
     "android"
   ],
   "engines": [],
-  "englishdoc": ""
+  "englishdoc": "",
+  "repository" :
+    { "type" : "git"
+    , "url" : "https://github.com/flytit/cordova-plugin-flytit-thumbcreator.git"
+    }
 }

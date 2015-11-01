@@ -2,6 +2,7 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.PluginResult;
 import android.util.Log;
 import android.provider.Settings;
 import android.widget.Toast;
@@ -14,11 +15,17 @@ import java.lang.Exception;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import java.io.*;
-
+import com.google.gson.Gson;
 
 public class ThumbCreator extends CordovaPlugin {
 
     public static final String TAG = "ThumbCreator";
+    public CallbackContext callback;
+   public JSONArray args;
+    public String fromPath ="";
+    public String toPath="";
+    public int width = 100;
+    public int height = 100;
 
     /**
      * Constructor.
@@ -38,69 +45,63 @@ public class ThumbCreator extends CordovaPlugin {
         Log.v(TAG,"Init ThumbCreator");
     }
 
-    public boolean execute(final String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    @Override
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        callback = callbackContext;
 
-        final int duration = Toast.LENGTH_SHORT;
-// Shows a toasts
-        Log.v(TAG, "CoolPlugin received:" + action);
+        String result = "";
 
+        this.args = args;
+        fromPath = this.args.getString(0);
+        toPath = this.args.getString(1);
 
-        cordova.getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                Log.v(TAG, "INNE");
-                String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-                String fileDir = baseDir + action;
-                Log.v(TAG, fileDir);
-
-
-                try {
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                   // options.inSampleSize = 2;
-                    File file =new File(fileDir);
-                    Log.v(TAG, "filename: " + file.getName() + " - " + file.length());
-
-                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                    Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, 40, 40);
-                    if(thumb== null)
-                        Log.v(TAG, "thumb is null");
-                    else
-                        Log.v(TAG, "Bitmap is not NULL");
+        if (fromPath.charAt(0) != '/') {
+            fromPath = "/" + fromPath;
+        }
+        if (toPath.charAt(0) != '/') {
+            toPath = "/" + toPath;
+        }
 
 
+        Log.v(TAG, "INNE");
+        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String fileDir = baseDir + fromPath;
+        Log.v(TAG, fileDir);
+
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            File file = new File(fileDir);
+            Log.v(TAG, "filename: " + file.getName() + " - " + file.length());
+
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, width, height);
 
 
+            OutputStream fOut = null;
+            File directory = new File(Environment.getExternalStorageDirectory() + "/" + toPath);
+            directory.mkdirs();
 
-                    Log.v(TAG, "BITMAP height" + bitmap.getHeight());
-                    Log.v(TAG, "BITMAP width" + bitmap.getWidth());
+            String thumbFileName = "_thumb_" + file.getName();
+            File fileToStream = new File(baseDir + "/" + toPath, thumbFileName);
+            fOut = new FileOutputStream(fileToStream);
+            thumb.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+            fOut.flush();
+            fOut.close();
 
-                    Log.v(TAG, "BITMAP height" + thumb.getHeight());
-                    Log.v(TAG, "BITMAP width" + thumb.getWidth());
+            ThumbData data = new ThumbData();
+            data.setAbsolutePath(fileToStream.getAbsolutePath());
+            data.setShortPath(toPath + thumbFileName);
 
+            Gson gson = new Gson();
+            String json = gson.toJson(data);
+            callback.success(json);
+            return true;
 
-                    OutputStream fOut = null;
-                    File fileToStream = new File(baseDir +"/Infraflyt", "thumb.jpg");
-                    fOut = new FileOutputStream(fileToStream);
-                    thumb.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-                    fOut.flush();
-                    fOut.close(); // do not forget to close the stream
-
-
-
-                    //MediaStore.Images.Media.insertImage(getContentResolver(), fileToStream.getAbsolutePath(), fileToStream.getName(), fileToStream.getName());
-
-                } catch (Exception e) {
-                    Log.v(TAG, e.getMessage());
-                    Toast toast = Toast.makeText(cordova.getActivity().getApplicationContext(), "Error:" + e.getMessage(), 5000);
-                    toast.show();
-                }
-
-
-                Toast toast = Toast.makeText(cordova.getActivity().getApplicationContext(), "Filepath :" +fileDir , duration);
-                toast.show();
-            }
-        });
-
-        return true;
+        } catch (Exception e) {
+            callback.error("An errror occured");
+            return false;
+        }
     }
-}
+ }
+
