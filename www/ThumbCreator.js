@@ -15,7 +15,7 @@ ThumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback
         errorCallback(result);
         /*alert("Error" + reply);*/
     },
-    "thumbCreator"
+    "ThumbCreator"
     ,
     "createThumb",
     args);

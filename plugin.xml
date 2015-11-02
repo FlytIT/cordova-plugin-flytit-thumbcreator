@@ -11,7 +11,7 @@
     <issue></issue>
 
     <js-module src="www/ThumbCreator.js" name="ThumbCreator">
-        <clobbers target="ThumbCreator" />
+        <clobbers target="thumbCreator" />
     </js-module>
 
     <!-- android -->
