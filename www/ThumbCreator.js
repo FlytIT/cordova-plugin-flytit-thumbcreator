@@ -4,7 +4,7 @@ function thumbCreator() {
  console.log("ThumbCreator.js: is created");
 }
 
-ThumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback, errorCallback) {
+thumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback, errorCallback) {
     
     var args = [fromPath, toPath];
 
@@ -15,7 +15,7 @@ ThumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback
         errorCallback(result);
         /*alert("Error" + reply);*/
     },
-    "ThumbCreator"
+    "thumbCreator"
     ,
     "createThumb",
     args);
