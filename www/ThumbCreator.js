@@ -1,10 +1,10 @@
 var exec = require('cordova/exec');
 
-function thumbCreator() {
+function ThumbCreator() {
  console.log("ThumbCreator.js: is created");
 }
 
-thumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback, errorCallback) {
+ThumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback, errorCallback) {
     
     var args = [fromPath, toPath];
 
@@ -21,6 +21,6 @@ thumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback
     args);
 }
 
- var thumb = new thumbCreator();
+ var thumb = new ThumbCreator();
  module.exports = thumb;
 
