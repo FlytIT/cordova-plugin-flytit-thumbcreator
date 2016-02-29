@@ -1,16 +1,11 @@
 //
-//  ThumCreator.m
+//  ThumbCreator.m
 //  PathPlugin
-//
-//  Created by Mangai on 22/01/16.
-//
-//
-
-#import "ThumCreator.h"
-
-@implementation ThumCreator
 
 
+#import "ThumbCreator.h"
+
+@implementation ThumbCreator
 
 - (void) cordovaGetFileContents:(CDVInvokedUrlCommand *)command {
     
@@ -30,8 +25,6 @@
     if ([stringToPath hasPrefix:@"/"]){
         stringToPath = [NSString stringWithFormat:@"/%@",stringToPath];
     }
-    
-    
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory=@"";

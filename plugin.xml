@@ -30,4 +30,15 @@
         <source-file src="src/android/ThumbData.java" target-dir="src/" />
         <source-file src="src/android/plugins/gson-2.4.jar" target-dir="libs" />
     </platform>
+
+
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+    <feature name="ThumbCreator">
+      <param name="ios-package" value="ThumbCreator"/>
+    </feature>
+  </config-file>
+  <header-file src="src/ios/ThumbCreator.h" />
+  <source-file src="src/ios/ThumbCreator.m" />
+  </platform>
 </plugin>
