@@ -9,6 +9,7 @@ ThumbCreator.prototype.createThumb = function (fromPath, toPath, successCallback
     var args = [fromPath, toPath];
 
  exec(function(result){
+     console.log("sucess from native", result);
          successCallback(JSON.parse(result));
      },
     function (result) {

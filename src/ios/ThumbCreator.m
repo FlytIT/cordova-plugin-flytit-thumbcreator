@@ -7,7 +7,7 @@
 
 @implementation ThumbCreator
 
-- (void) cordovaGetFileContents:(CDVInvokedUrlCommand *)command {
+- (void) createThumb:(CDVInvokedUrlCommand *)command {
     
     NSString *stringFromPath = @"";
     if(command.arguments.count > 0)
@@ -26,9 +26,12 @@
         stringToPath = [NSString stringWithFormat:@"/%@",stringToPath];
     }
     
+    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory=@"";
     NSString *stringCombineBoth=@"";
+    NSError *error = nil;
+    
     if(paths.count>0){
         documentsDirectory = [paths objectAtIndex:0];
         stringCombineBoth = [NSString stringWithFormat:@"%@%@",documentsDirectory,stringFromPath];
@@ -41,23 +44,47 @@
     NSString *stringThumbFileName = [NSString stringWithFormat:@"_thumb_%@",[stringFromPath lastPathComponent]];
     
     NSString *stringNewFilePath = [NSString stringWithFormat:@"%@%@",stringToPath,stringThumbFileName];
-      NSString *stringNewFileFullPath = [NSString stringWithFormat:@"%@%@%@",documentsDirectory,stringToPath,stringThumbFileName];
+    NSString *stringNewFileFullPath = [NSString stringWithFormat:@"%@/%@%@",documentsDirectory,stringToPath,stringThumbFileName];
+    NSString *pathForJson =[NSString stringWithFormat:@"file://%@", stringNewFileFullPath];
     
-   BOOL success = [UIImagePNGRepresentation(imageResize) writeToFile:stringNewFilePath atomically:YES];
+    BOOL success = [UIImagePNGRepresentation(imageResize) writeToFile:stringNewFileFullPath options: NSDataWritingAtomic error:&error];
     
     if(success)
     {
+        NSDictionary* ret =@{
+                             @"absolutePath": pathForJson,
+                             @"shortPath": stringNewFilePath
+                             };
+        
+        
+        
         NSDictionary *jsonObj = [ [NSDictionary alloc]initWithObjectsAndKeys :
                                  @"true", @"success",stringNewFileFullPath,stringNewFilePath,
                                  nil];
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus : CDVCommandStatus_OK
-                                         messageAsDictionary : jsonObj];
-       [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        
+        NSError *jsonError;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:ret options:NSJSONWritingPrettyPrinted error:&jsonError];
+        
+        
+        if(!jsonData)
+        {
+            NSLog(@"Got an error %@",jsonError);
+        }
+        else{
+            NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            
+            
+            
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus : CDVCommandStatus_OK
+                                                          messageAsDictionary : jsonString];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
     }
     else{
-        
+        NSLog(@"Skriv til file feilet %@", error);
+        NSString *message = [error localizedDescription];
         NSDictionary *jsonObj = [ [NSDictionary alloc]initWithObjectsAndKeys :
-                                 @"false", @"not_success",
+                                 @"false", message,
                                  nil];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus : CDVCommandStatus_ERROR                                                      messageAsDictionary : jsonObj];
         
@@ -65,13 +92,13 @@
     }
     
     
-   
+    
 }
 
 
 
 -(UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
-   
+    
     UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
     [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();

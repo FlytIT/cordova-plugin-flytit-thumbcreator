@@ -5,7 +5,7 @@
 {
     
 }
-- (void) cordovaGetFileContents:(CDVInvokedUrlCommand *)command;
+- (void) createThumb:(CDVInvokedUrlCommand *)command;
 
 @end
 
