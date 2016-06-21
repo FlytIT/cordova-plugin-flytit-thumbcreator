@@ -11,7 +11,7 @@
     <issue></issue>
 
     <js-module src="www/ThumbCreator.js" name="ThumbCreator">
-        <clobbers target="thumbCreator" />
+        <clobbers target="window.ThumbCreator" />
     </js-module>
 
     <!-- android -->
@@ -23,6 +23,7 @@
         </config-file>
       <config-file target="AndroidManifest.xml" parent="/*">
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
       </config-file>
 

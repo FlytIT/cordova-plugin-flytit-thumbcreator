@@ -55,51 +55,50 @@ public class ThumbCreator extends CordovaPlugin {
         fromPath = this.args.getString(0);
         toPath = this.args.getString(1);
 
-        if (fromPath.charAt(0) != '/') {
-            fromPath = "/" + fromPath;
-        }
-        if (toPath.charAt(0) != '/') {
-            toPath = "/" + toPath;
-        }
-
-
         Log.v(TAG, "INNE");
-        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String fileDir = baseDir + fromPath;
-        Log.v(TAG, fileDir);
+        Log.v(TAG, fromPath);
 
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            File file = new File(fileDir);
+            File file = new File(fromPath);
             Log.v(TAG, "filename: " + file.getName() + " - " + file.length());
 
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, width, height);
 
-
+            Log.v(TAG, "thumbDir: " + toPath);
             OutputStream fOut = null;
-            File directory = new File(Environment.getExternalStorageDirectory() + "/" + toPath);
+            File directory = new File(toPath);
             directory.mkdirs();
 
             String thumbFileName = "_thumb_" + file.getName();
-            File fileToStream = new File(baseDir + "/" + toPath, thumbFileName);
+
+            Log.v(TAG, "thumbFileName: " + thumbFileName);
+            File fileToStream = new File(toPath, thumbFileName);
             fOut = new FileOutputStream(fileToStream);
             thumb.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
             fOut.flush();
             fOut.close();
 
+            Log.v(TAG, "DONE WRITING!");
+
             ThumbData data = new ThumbData();
             data.setAbsolutePath(fileToStream.getAbsolutePath());
             data.setShortPath(toPath + thumbFileName);
 
+            Log.v(TAG, "Data set!");
+
             Gson gson = new Gson();
             String json = gson.toJson(data);
+
+            Log.v(TAG, "Calling back!");
             callback.success(json);
             return true;
 
         } catch (Exception e) {
-            callback.error("An errror occured");
+            Log.v(TAG, "Error: " + e.getMessage());
+            callback.error("An errror occured: " + e.getMessage());
             return false;
         }
     }
