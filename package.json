@@ -7,7 +7,7 @@
   "repo": "",
   "issue": "",
   "keywords": [
-   "ecosystem:cordova",
+    "ecosystem:cordova",
     "cordova-android",
     "device"
   ],
@@ -16,8 +16,8 @@
   ],
   "engines": [],
   "englishdoc": "",
-  "repository" :
-    { "type" : "git"
-    , "url" : "https://github.com/flytit/cordova-plugin-flytit-thumbcreator.git"
-    }
+  "repository" : { 
+    "type" : "git",
+     "url" : "https://github.com/flytit/cordova-plugin-flytit-thumbcreator.git"
+  }
 }

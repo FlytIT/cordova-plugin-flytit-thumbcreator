@@ -20,12 +20,8 @@ import com.google.gson.Gson;
 public class ThumbCreator extends CordovaPlugin {
 
     public static final String TAG = "ThumbCreator";
-    public CallbackContext callback;
-   public JSONArray args;
-    public String fromPath ="";
-    public String toPath="";
-    public int width = 100;
-    public int height = 100;
+    public static int width = 100;
+    public static int height = 100;
 
     /**
      * Constructor.
@@ -39,66 +35,63 @@ public class ThumbCreator extends CordovaPlugin {
      * @param cordova The context of the main Activity.
      * @param webView The CordovaWebView Cordova is running in.
      */
-
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        Log.v(TAG,"Init ThumbCreator");
     }
 
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        callback = callbackContext;
+    public boolean execute(String action, JSONArray args, CallbackContext callback) throws JSONException {
 
-        String result = "";
+        String fromPath = args.getString(0);
+        String toPath = args.getString(1);
 
-        this.args = args;
-        fromPath = this.args.getString(0);
-        toPath = this.args.getString(1);
-
-        Log.v(TAG, "INNE");
-        Log.v(TAG, fromPath);
+        if(fromPath.startsWith("file://")) {
+            fromPath = fromPath.substring(6);
+        }
+        if(toPath.startsWith("file://")) {
+            toPath = toPath.substring(6);
+        }
+        System.out.println(fromPath);
+        System.out.println(toPath);
 
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             File file = new File(fromPath);
-            Log.v(TAG, "filename: " + file.getName() + " - " + file.length());
 
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, width, height);
+            Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, ThumbCreator.width, ThumbCreator.height);
 
-            Log.v(TAG, "thumbDir: " + toPath);
+
             OutputStream fOut = null;
-            File directory = new File(toPath);
-            directory.mkdirs();
+            File folder = new File(toPath);
+            if(!folder.exists()) {
+                folder.mkdir();
+            }
+            File targetFile = new File(toPath + "/Thumb.jpg");
+            if(!targetFile.exists()) {
+                targetFile.createNewFile();
+            }
 
-            String thumbFileName = "_thumb_" + file.getName();
+            if(targetFile.exists()) {
+                fOut = new FileOutputStream(targetFile);
+                thumb.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.flush();
+                fOut.close();
 
-            Log.v(TAG, "thumbFileName: " + thumbFileName);
-            File fileToStream = new File(toPath, thumbFileName);
-            fOut = new FileOutputStream(fileToStream);
-            thumb.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-            fOut.flush();
-            fOut.close();
+                ThumbData data = new ThumbData();
+                data.setAbsolutePath(targetFile.getAbsolutePath());
+                data.setSuccess(true);
 
-            Log.v(TAG, "DONE WRITING!");
-
-            ThumbData data = new ThumbData();
-            data.setAbsolutePath(fileToStream.getAbsolutePath());
-            data.setShortPath(toPath + thumbFileName);
-
-            Log.v(TAG, "Data set!");
-
-            Gson gson = new Gson();
-            String json = gson.toJson(data);
-
-            Log.v(TAG, "Calling back!");
-            callback.success(json);
-            return true;
-
+                Gson gson = new Gson();
+                String json = gson.toJson(data);
+                callback.success(json);
+                return true;
+            }
+            callback.error("An errror occured.");
+            return false;
         } catch (Exception e) {
-            Log.v(TAG, "Error: " + e.getMessage());
-            callback.error("An errror occured: " + e.getMessage());
+            callback.error("An errror occured: " + e.toString());
             return false;
         }
     }

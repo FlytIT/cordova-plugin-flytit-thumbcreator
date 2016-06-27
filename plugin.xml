@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova-plugin-flytit-thumbcreator"
-    version="0.0.1">
+    version="0.0.2">
     <name>ThumbCreatorPlugin</name>
     <description>Create a thumb from an image</description>
     <license>Apache 2.0</license>
@@ -11,7 +11,7 @@
     <issue></issue>
 
     <js-module src="www/ThumbCreator.js" name="ThumbCreator">
-        <clobbers target="window.ThumbCreator" />
+        <clobbers target="ThumbCreator" />
     </js-module>
 
     <!-- android -->
@@ -23,7 +23,6 @@
         </config-file>
       <config-file target="AndroidManifest.xml" parent="/*">
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
       </config-file>
 
