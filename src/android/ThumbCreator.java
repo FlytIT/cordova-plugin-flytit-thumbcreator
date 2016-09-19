@@ -68,7 +68,7 @@ public class ThumbCreator extends CordovaPlugin {
             if(!folder.exists()) {
                 folder.mkdir();
             }
-            File targetFile = new File(toPath + "/Thumb.jpg");
+            File targetFile = new File(toPath + "_thumb_" +file.getName());
             if(!targetFile.exists()) {
                 targetFile.createNewFile();
             }
