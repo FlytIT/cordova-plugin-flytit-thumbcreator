@@ -16,6 +16,8 @@ import android.media.ThumbnailUtils;
 import android.os.Environment;
 import java.io.*;
 import com.google.gson.Gson;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 
 public class ThumbCreator extends CordovaPlugin {
 
@@ -91,7 +93,12 @@ public class ThumbCreator extends CordovaPlugin {
             callback.error("An errror occured.");
             return false;
         } catch (Exception e) {
-            callback.error("An errror occured: " + e.toString());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+
+            callback.error("An errror occured: " + sw.toString());
+
             return false;
         }
     }
