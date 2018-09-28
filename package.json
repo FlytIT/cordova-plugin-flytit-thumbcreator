@@ -16,8 +16,20 @@
   ],
   "engines": [],
   "englishdoc": "",
-  "repository" : {
-    "type" : "git",
-     "url" : "https://github.com/flytit/cordova-plugin-flytit-thumbcreator.git"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flytit/cordova-plugin-flytit-thumbcreator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/flytit/cordova-plugin-flytit-thumbcreator/issues"
+  },
+  "homepage": "https://github.com/flytit/cordova-plugin-flytit-thumbcreator#readme",
+  "cordova": {
+    "id": "cordova-plugin-flytit-thumbcreator",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "author": "Flyt IT"
 }
