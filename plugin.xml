@@ -28,7 +28,7 @@
 
       <source-file src="src/android/ThumbCreator.java" target-dir="src/" />
         <source-file src="src/android/ThumbData.java" target-dir="src/" />
-        <source-file src="src/android/plugins/gson-2.4.jar" target-dir="libs" />
+      <framework src="com.google.code.gson:gson:2.4" />
     </platform>
 
 
