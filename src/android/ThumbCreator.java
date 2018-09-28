@@ -59,18 +59,18 @@ public class ThumbCreator extends CordovaPlugin {
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            File file = new File(fromPath);
+            File file = new File(Environment.getExternalStorageDirectory(), fromPath);
 
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             Bitmap thumb = ThumbnailUtils.extractThumbnail(bitmap, ThumbCreator.width, ThumbCreator.height);
 
 
             OutputStream fOut = null;
-            File folder = new File(toPath);
+            File folder = new File(Environment.getExternalStorageDirectory(), toPath.substring(0, toPath.lastIndexOf('/')));
             if(!folder.exists()) {
-                folder.mkdir();
+                folder.mkdirs();
             }
-            File targetFile = new File(toPath + "_thumb_" +file.getName());
+            File targetFile = new File(Environment.getExternalStorageDirectory(), toPath + "_thumb_" + file.getName());
             if(!targetFile.exists()) {
                 targetFile.createNewFile();
             }
